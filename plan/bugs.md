@@ -2,7 +2,7 @@
 
 ## BUG-001 — iOS Simulator times out opening Expo Go URL
 
-**Status:** Resolved — see `plan/run-simulator-instructions.md`  
+**Status:** RESOLVED — see `plan/run-simulator-instructions.md`
 **Phase:** 0 (Bootstrap)
 
 **Error:**
@@ -19,10 +19,4 @@ Operation timed out
 - macOS firewall blocking port 8081
 - The LAN IP changed or is unreachable from the simulator's network context
 
-**Note for next session:** `--tunnel` is the fastest fix — start with that before trying anything else.
-
-**Workaround to try:**
-1. In the Expo CLI terminal, press `i` to retry opening in the simulator
-2. If that fails, open Expo Go manually in the simulator, then scan/enter the URL `exp://127.0.0.1:8081` (localhost instead of LAN IP)
-3. In the Expo CLI terminal, press `?` and look for a tunnel option — run with `npm run ios -- --tunnel` to use a public tunnel instead of LAN
-4. Check macOS firewall: System Settings → Network → Firewall → ensure it's not blocking incoming connections on port 8081
+**Fix:** Run with `--tunnel` flag: `npm run ios -- --tunnel`
