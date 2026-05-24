@@ -1,0 +1,29 @@
+========================================================================
+SCREEN: Note Detail — /note/[id] (Pushed onto Stack view from list tap)
+========================================================================
+
++-----------------------------------------------------------------------+
+|  < Notes                                                Edit   Delete |  <-- Nav Stack Back | Modification Toolbar
++-----------------------------------------------------------------------+
+|                                                                       |
+|  [icon: book] Words                                                   |  <-- Category Badge (Filled with #4A90D9 Blue)
+|                                                                       |
+|  Serendipity                                                          |  <-- AI-Generated Title (display_title)
+|                                                                       |
+|  Summary                                                              |
+|  The unexpected discovery of valuable or agreeable things by chance   |  <-- AI-Generated One-Liner (ai_summary)
+|  contrasted against an intentional look for alternative targets.       |
+|                                                                       |
+|  Original Captured Note                                               |
+|  "I was parsing through old file designs looking for an enterprise    |  <-- Full Input Content text (raw_text)
+|  layout sheet and stumbled upon this pure classic text note structure|  |
+|  by pure luck. Perfect instance of total serendipity."                |
+|                                                                       |
+|  Tags                                                                 |
+|  [vocab]   [spanish]   [design-terms]                             |  <-- Custom String Pill Chips (ai_tags)
+|                                                                       |
+|  Metadata                                                             |
+|  Source: [icon: mic] Voice Memo                                      |  <-- source platform validation
+|  Created: May 21, 2026 @ 8:22 PM                                      |  <-- timestamp parsing
+|                                                                       |
++-----------------------------------------------------------------------+

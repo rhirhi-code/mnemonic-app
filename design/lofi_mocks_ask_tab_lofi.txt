@@ -1,0 +1,29 @@
+========================================================================
+SCREEN: Ask Tab — /(tabs)/ask (Natural Language Context Vector Search)
+========================================================================
+
++-----------------------------------------------------------------------+
+|  ASK                                                                  |  <-- Clear screen identity header
++-----------------------------------------------------------------------+
+|  Q: What words did I learn this week?                                 |  <-- Previous prompt historical layer
+|                                                                       |
+|  A: You have logged 2 vocabulary words this week. The main focus      |  <-- AI response formatting
+|  was around unexpected events ("Serendipity") and an architectural    |
+|  revelation you saved via voice notes ("Epiphany").                   |
+|                                                                       |
+|  Referenced Notes:                                                    |
+|  [Note: Serendipity]      [Note: Epiphany]                            |  <-- Tappable Navigation Chips to Details
+|                                                                       |
+|=======================================================================|
+|                                                                       |
+|  [icon: sparkle] AI is compiling entries...                          |  <-- Toggleable loading state component
+|                                                                       |
+|                                                                       |
+|                                                                       |
+|  +-----------------------------------------------------------------+  |
+|  | Ask a question about your notes...                 [icon: arrow]|  |  <-- Main chat/search bar prompt field
+|  +-----------------------------------------------------------------+  |
+|-----------------------------------------------------------------------|
+|       [icon: main]               [icon: chat]           [icon: chart] |
+|        Notes                        *Ask* Recap      |  <-- Tab Active State Marker Shift
++-----------------------------------------------------------------------+

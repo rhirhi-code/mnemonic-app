@@ -1,0 +1,39 @@
+========================================================================
+SCREEN: Notes List — /(tabs)/notes (Default Tab Home Screen)
+========================================================================
+
++-----------------------------------------------------------------------+
+|  [icon: sync] Categorizing 2 notes...                              (x)|  <-- AIStatusBanner (Neutral, subtle alert)
++-----------------------------------------------------------------------+
+|  NOTES                                                                |
+|                                                                       |
+|  > [icon: lightbulb] Ideas (3)                                   [v]  |  <-- CategoryGroup Header (Amber #F5A623 Accent)
+|                                                                       |
+|  v [icon: book] Words (2)                                        [^]  |  <-- CategoryGroup Header (Blue #4A90D9 Accent)
+|  +-----------------------------------------------------------------+  |
+|  | Serendipity                                                     |  |  <-- NoteCard (Done State)
+|  | The occurrence of events by chance in a happy or beneficial way|  |
+|  |                                                                 |  |
+|  | [vocab]  [spanish]                                [icon: text]  |  |  <-- ai_tags as chips & source indicator
+|  +-----------------------------------------------------------------+  |
+|  | (Categorizing note...)                                          |  |  <-- NoteCard (Pending State: Unstyled/Neutral)
+|  | "Yesterday I went to the market and overheard a word..."         |  |  <-- raw_text preview
+|  |                                                                 |  |
+|  | [ Spinner/Shimmer Block ]                                        |  |
+|  +-----------------------------------------------------------------+  |
+|                                                                       |
+|  v [icon: alarm] Reminders (1)                                   [^]  |  <-- CategoryGroup Header (Red #D0021B Accent)
+|  +-----------------------------------------------------------------+  |
+|  | Call Mom                                                        |  |  <-- NoteCard (Done State with Reminder)
+|  | Ask her about the weekend plans and tell her about the trip.    |  |
+|  |                                                                 |  |
+|  | [icon: alarm] May 24, 2026, 6:00 PM             [icon: mic]   |  |  <-- reminder_at badge & source: 'voice' badge
+|  +-----------------------------------------------------------------+  |
+|                                                                       |
+|                                                     +-----------+     |
+|                                                     |    (+)    |     |  <-- Floating Action Button (FAB)
+|                                                     +-----------+     |      Pushed modally to /note/new
+|-----------------------------------------------------------------------|
+|       [icon: main]               [icon: chat]           [icon: chart] |
+|        *Notes* Ask                   Recap      |  <-- Persistent iOS Bottom Tab Bar
++-----------------------------------------------------------------------+

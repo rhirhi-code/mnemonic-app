@@ -1,0 +1,31 @@
+========================================================================
+SCREEN: Recap Tab — /(tabs)/recap (Periodic Analytical Digests)
+========================================================================
+
++-----------------------------------------------------------------------+
+|  RECAP                                                                |
+|                                                                       |
+|  +-----------------------------------------------------------------+  |
+|  |   Today     |        [[ This Week ]]        |    This Month     |  |  <-- Segmented Navigation Style Button Bar
+|  +-----------------------------------------------------------------+  |      (Selected choice visual border overlay)
+|                                                                       |
+|  +-----------------------------------------------------------------+  |
+|  |  WEEKLY DIGEST (May 14 - May 21)                                |  |  <-- RecapCard Wrapper Element
+|  |                                                                 |  |
+|  |  Summary                                                        |  |
+|  |  Your capture workflows this week heavily prioritized sudden     |  |  <-- Narrative summary paragraph block
+|  |  ideation spikes during off-site routines, alongside high-tempo |  |
+|  |  vocabulary curation during reading blocks.                     |  |
+|  |                                                                 |  |
+|  |  Key Highlights                                                 |  |
+|  |  * Captured 3 design concepts under the "Ideas" umbrella category|  |  <-- Bullet Highlights aggregation
+|  |  * Logged 2 Spanish terminology phrases                         |  |
+|  |  * Configured 1 reminder alert for weekend scheduling sequences |  |
+|  |                                                                 |  |
+|  +-----------------------------------------------------------------+  |
+|                                                                       |
+|                                                                       |
++-----------------------------------------------------------------------+
+|       [icon: main]               [icon: chat]           [icon: chart] |
+|        Notes                        Ask                   *Recap* |  <-- Tab Active State Marker Shift
++-----------------------------------------------------------------------+

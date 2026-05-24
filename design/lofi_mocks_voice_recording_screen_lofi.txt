@@ -1,0 +1,46 @@
+========================================================================
+SCREEN: Voice Recording — /note/voice (Dedicated Minimalist Utility Screen)
+========================================================================
+
+STATE A: [recording]
++-----------------------------------------------------------------------+
+|  (X) Cancel                                                           |  <-- Clean close/dismiss corner action
++-----------------------------------------------------------------------+
+|                                                                       |
+|                                 00:42                                 |  <-- Live MM:SS Duration Counter Up
+|                                                                       |
+|                                                                       |
+|                               ( ( O ) )                               |  <-- VoiceRecordButton Component
+|                                                                       |      Pulsing red loop graphic feedback
+|                              Recording...                             |
+|                              Tap to Stop                              |
+|                                                                       |
+|                                                                       |
+|       "...and then I realized that the best way to handle             |  <-- Live Dynamic Streaming Transcript
+|        the persistent bottom sheets in React Native was to use        |      (Auto-scrolls vertically when full)
+|        simple layout primitives and normal dimensions..."             |
+|                                                                       |
++-----------------------------------------------------------------------+
+
+-------------------------------------------------------------------------
+
+STATE B: [done]
++-----------------------------------------------------------------------+
+|  (X) Cancel                                                           |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  Review & Edit Transcript:                                            |
+|  +-----------------------------------------------------------------+  |
+|  | and then I realized that the best way to handle the persistent   |  |  <-- Editable Multi-line TextInput box
+|  | bottom sheets in React Native was to use simple layout primitives|  |      Allows user confirmation & fixes
+|  | and normal dimensions instead of external weights.              |  |
+|  +-----------------------------------------------------------------+  |
+|                                                                       |
+|                                                                       |
+|                          +-----------------+                          |
+|                          |    Save Note    |                          |  <-- Primary Action Button
+|                          +-----------------+                          |      Triggers AI processing sequence
+|                                                                       |
+|                                Discard                                |  <-- Secondary Link Text Button
+|                                                                       |
++-----------------------------------------------------------------------+
