@@ -41,8 +41,9 @@ yarn-error.*
 /ios
 /android
 
-# Claude Code
-.claude/
+# Claude Code — exclude runtime/local files, track skills and settings
+.claude/settings.local.json
+.claude/worktrees/
 
 # Editor
 .vscode/
