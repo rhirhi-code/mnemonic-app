@@ -13,11 +13,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useAI } from '@/hooks/useAI';
 import { useNotes } from '@/hooks/useNotes';
 
 export default function NewNoteScreen() {
   const router = useRouter();
   const { addNote } = useNotes();
+  const { categorizeNote } = useAI();
   const [text, setText] = useState('');
   const [saving, setSaving] = useState(false);
   const inputRef = useRef<TextInput>(null);
@@ -30,8 +32,9 @@ export default function NewNoteScreen() {
     }
     setSaving(true);
     try {
-      await addNote({ rawText: trimmed, source: 'text' });
+      const note = await addNote({ rawText: trimmed, source: 'text' });
       router.back();
+      categorizeNote(note.id, note.rawText); // fire-and-forget; Notes screen polls for the result
     } catch {
       Alert.alert('Error', 'Failed to save note. Please try again.');
       setSaving(false);

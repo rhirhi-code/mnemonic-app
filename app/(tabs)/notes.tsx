@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -22,6 +22,12 @@ export default function NotesScreen() {
     () => notes.filter((n) => n.aiStatus === 'pending').length,
     [notes]
   );
+
+  useEffect(() => {
+    if (pendingCount === 0) return;
+    const id = setInterval(refresh, 3000);
+    return () => clearInterval(id);
+  }, [pendingCount, refresh]);
 
   const grouped = useMemo(() => {
     const catMap = new Map(categories.map((c) => [c.id, c]));
