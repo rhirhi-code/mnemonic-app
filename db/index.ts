@@ -10,7 +10,7 @@ export async function getDb(): Promise<SQLite.SQLiteDatabase> {
   return _db;
 }
 
-async function migrate(db: SQLite.SQLiteDatabase): Promise<void> {
+export async function migrate(db: SQLite.SQLiteDatabase): Promise<void> {
   const { user_version: currentVersion } = await db.getFirstAsync<{ user_version: number }>(
     'PRAGMA user_version'
   ) ?? { user_version: 0 };
