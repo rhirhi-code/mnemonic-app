@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -13,8 +13,10 @@ import type { Note } from '@/types';
 
 export default function NotesScreen() {
   const router = useRouter();
-  const { notes, loading } = useNotes();
+  const { notes, loading, refresh } = useNotes();
   const { categories } = useCategories();
+
+  useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
 
   const pendingCount = useMemo(
     () => notes.filter((n) => n.aiStatus === 'pending').length,
