@@ -65,3 +65,5 @@ Calling the 'setAudioModeAsync' function has failed
 **What happened:** Recording starts successfully (timer counts, audio captured) but no transcript appears and the done state shows an empty transcript. The `expo-speech-recognition` error event fires with "Failed to initialize recognizer." — `SFSpeechRecognizer` never starts.
 
 **Likely cause:** The iOS simulator does not support `SFSpeechRecognizer` with network-based recognition. Possible fixes: (1) test on a physical device instead of the simulator, (2) pass `requiresOnDeviceRecognition: true` to `ExpoSpeechRecognitionModule.start()` which uses the on-device model available since iOS 16, or (3) both.
+
+**Plan:** Test on a physical device before attempting a code fix. On-device testing will confirm whether this is a simulator-only limitation or a real bug.
