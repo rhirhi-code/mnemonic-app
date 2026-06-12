@@ -36,3 +36,18 @@ FunctionCallException: Calling the 'record' function has failed
 **What happened:** Tapping the mic button to start recording throws a `RecordingDisabledException`. The app transitions to the error state and shows "Try Again".
 
 **Likely cause:** `expo-audio` requires `setAudioModeAsync({ allowsRecording: true })` to be called before `recorder.record()`. Currently `setAudioModeAsync` is only called on stop (to release the audio session), never on start to enable it.
+
+## BUG-003 — Impossible audio mode: playsInSilentMode == false with allowsRecording == true
+
+**Status:** PRODUCT REVIEW
+**Phase:** 4 (Voice Recording)
+
+**Error:**
+```
+Calling the 'setAudioModeAsync' function has failed
+→ Caused by: Impossible audio mode: playsInSilentMode == false and allowsRecording == true cannot be set on iOS
+```
+
+**What happened:** After BUG-002 was fixed, tapping the mic button still fails. The `setAudioModeAsync({ allowsRecording: true })` call throws because iOS forbids `allowsRecording: true` unless `playsInSilentMode` is also `true`.
+
+**Likely cause:** iOS audio session constraint — `allowsRecording: true` requires `playsInSilentMode: true` to be set at the same time. The fix is `setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true })` on start.
