@@ -23,7 +23,7 @@ Operation timed out
 
 ## BUG-002 — RecordingDisabledException when starting voice recording
 
-**Status:** RESOLVED
+**Status:** PRODUCT REVIEW
 **Phase:** 4 (Voice Recording)
 
 **Error:**
