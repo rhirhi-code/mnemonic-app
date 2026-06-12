@@ -34,7 +34,20 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone to record voice notes."
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone to record voice notes.",
+          "speechRecognitionPermission": "Allow $(PRODUCT_NAME) to transcribe your voice notes."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
