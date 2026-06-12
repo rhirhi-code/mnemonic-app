@@ -73,6 +73,7 @@ export function useVoiceRecorder(): VoiceRecorderResult {
       setDuration(0);
       setState('recording');
 
+      await setAudioModeAsync({ allowsRecording: true });
       await recorder.prepareToRecordAsync();
       recorder.record();
 
