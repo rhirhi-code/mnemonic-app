@@ -1,12 +1,14 @@
-Handle a session handoff. The argument is `start` or `end`, with optional additional parameters.
+Manage the development session lifecycle. Use `start` to orient at the beginning of a session and `end` to write a handoff record when wrapping up.
+
+This skill defines the rules of the development cycle: how sessions begin, what gets checked, and what gets recorded. Every session should start and end with this skill.
 
 ## Argument formats
 
-- `/session-handoff start` — asks for a session name, then shows orientation
-- `/session-handoff start <name>` — uses the provided name, then shows orientation
-- `/session-handoff start <name> /model <model>` — also reminds you to switch model at init
-- `/session-handoff end` — writes the handoff file using the session ID
-- `/session-handoff end <name>` — writes the handoff file with the session name in the header
+- `/session-manager start` — asks for a session name, then shows orientation
+- `/session-manager start <name>` — uses the provided name, then shows orientation
+- `/session-manager start <name> /model <model>` — also reminds you to switch model at init
+- `/session-manager end` — writes the session record using the session ID
+- `/session-manager end <name>` — writes the session record with the session name in the header
 
 ## If the argument starts with "start"
 
@@ -52,7 +54,7 @@ Handle a session handoff. The argument is `start` or `end`, with optional additi
 5. Write a new file at `plan/sessions/<session-id>.md` using this structure:
 
 ```
-# Session Handoff — <session-id><if session-name is present: " — <session-name>">
+# Session — <session-id><if session-name is present: " — <session-name>">
 
 ## Completed This Session
 
@@ -62,7 +64,7 @@ Handle a session handoff. The argument is `start` or `end`, with optional additi
 
 | Task | Status |
 |------|--------|
-| <task from prior handoff> | ✅ Done / ⚠️ Partial / ❌ Not started |
+| <task from prior session> | ✅ Done / ⚠️ Partial / ❌ Not started |
 
 ## Next Steps
 
