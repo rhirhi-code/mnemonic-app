@@ -23,7 +23,7 @@ Operation timed out
 
 ## BUG-002 — RecordingDisabledException when starting voice recording
 
-**Status:** PRODUCT REVIEW
+**Status:** RESOLVED — fixed in PR #9
 **Phase:** 4 (Voice Recording)
 
 **Error:**
@@ -39,7 +39,7 @@ FunctionCallException: Calling the 'record' function has failed
 
 ## BUG-003 — Impossible audio mode: playsInSilentMode == false with allowsRecording == true
 
-**Status:** PRODUCT REVIEW
+**Status:** RESOLVED — fixed in PR #10
 **Phase:** 4 (Voice Recording)
 
 **Error:**
