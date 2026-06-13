@@ -67,3 +67,22 @@ Calling the 'setAudioModeAsync' function has failed
 **Likely cause:** The iOS simulator does not support `SFSpeechRecognizer` with network-based recognition. Possible fixes: (1) test on a physical device instead of the simulator, (2) pass `requiresOnDeviceRecognition: true` to `ExpoSpeechRecognitionModule.start()` which uses the on-device model available since iOS 16, or (3) both.
 
 **Plan:** Test on a physical device before attempting a code fix. On-device testing will confirm whether this is a simulator-only limitation or a real bug.
+
+## BUG-005 — ExpoSpeechRecognition native module not found; voice screen crashes on launch
+
+**Status:** PRODUCT REVIEW
+**Phase:** 4 (Voice Recording)
+
+**Error:**
+```
+ERROR  [Error: Cannot find native module 'ExpoSpeechRecognition']
+WARN   Route "./note/voice.tsx" is missing the required default export.
+
+Uncaught Error: Cannot find native module 'ExpoSpeechRecognition'
+  at <global> (hooks/useVoiceRecorder.ts:7)
+  at <global> (app/note/voice.tsx:19)
+```
+
+**What happened:** Launching the app with `expo run:ios` crashes immediately with "Cannot find native module 'ExpoSpeechRecognition'". The error originates at the `expo-speech-recognition` import in `useVoiceRecorder.ts`, which is imported at the top of `app/note/voice.tsx`. A separate warning also fires that `voice.tsx` is missing its default export (the screen is a placeholder stub).
+
+**Likely cause:** Two issues: (1) The `expo-speech-recognition` native module is not linked in the current iOS build — likely because CocoaPods were not re-installed after the package was added. Running a clean `expo run:ios` (which re-runs pod install) should fix this. (2) `app/note/voice.tsx` exports no default React component, which violates Expo Router's file-based routing requirement.
