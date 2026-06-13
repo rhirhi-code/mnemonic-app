@@ -70,7 +70,7 @@ Calling the 'setAudioModeAsync' function has failed
 
 ## BUG-006 — `/run` skill executes `node ios` instead of `expo run:ios`, crashing on launch
 
-**Status:** PRODUCT REVIEW
+**Status:** RESOLVED — fixed in PR #14
 **Phase:** 4 (Voice Recording)
 
 **Error:**
@@ -90,7 +90,7 @@ Node.js v26.0.0
 
 ## BUG-005 — ExpoSpeechRecognition native module not found; voice screen crashes on launch
 
-**Status:** PRODUCT REVIEW
+**Status:** RESOLVED — fixed in PR #13
 **Phase:** 4 (Voice Recording)
 
 **Error:**
