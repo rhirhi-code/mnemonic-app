@@ -106,3 +106,18 @@ Uncaught Error: Cannot find native module 'ExpoSpeechRecognition'
 **What happened:** Launching the app with `expo run:ios` crashes immediately with "Cannot find native module 'ExpoSpeechRecognition'". The error originates at the `expo-speech-recognition` import in `useVoiceRecorder.ts`, which is imported at the top of `app/note/voice.tsx`. A separate warning also fires that `voice.tsx` is missing its default export (the screen is a placeholder stub).
 
 **Likely cause:** Two issues: (1) The `expo-speech-recognition` native module is not linked in the current iOS build — likely because CocoaPods were not re-installed after the package was added. Running a clean `expo run:ios` (which re-runs pod install) should fix this. (2) `app/note/voice.tsx` exports no default React component, which violates Expo Router's file-based routing requirement.
+
+## BUG-007 — expo-speech-recognition native module not linked after `npm run ios`
+
+**Status:** BACKLOG
+**Phase:** 4 (Voice Recording)
+
+**Error:**
+```
+[useVoiceRecorder] expo-speech-recognition native module not available.
+Run `expo run:ios` to rebuild. Live transcription disabled.
+```
+
+**What happened:** Even after running `npm run ios` (which calls `expo run:ios` and should re-run pod install), the `ExpoSpeechRecognition` native module is still not found at runtime. The `require('expo-speech-recognition')` guard in `useVoiceRecorder.ts` catches the error and logs the warning, so the app doesn't crash, but live transcription is permanently disabled.
+
+**Likely cause:** The `expo-speech-recognition` CocoaPod is not being linked during the build. Possible reasons: (1) the Expo config plugin for `expo-speech-recognition` isn't generating the correct native project modifications, (2) a stale derived data / build cache is preventing the updated pods from being compiled in, or (3) the module requires `npx expo prebuild --clean` to fully regenerate the native project before `npm run ios`. Try: `npx expo prebuild --clean && npm run ios`.
