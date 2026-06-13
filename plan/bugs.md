@@ -68,6 +68,26 @@ Calling the 'setAudioModeAsync' function has failed
 
 **Plan:** Test on a physical device before attempting a code fix. On-device testing will confirm whether this is a simulator-only limitation or a real bug.
 
+## BUG-006 — `/run` skill executes `node ios` instead of `expo run:ios`, crashing on launch
+
+**Status:** PRODUCT REVIEW
+**Phase:** 4 (Voice Recording)
+
+**Error:**
+```
+Found & ignored ./node_modules ; is listed in .gitignore
+Found & ignored ./expo-env.d.ts ; is listed in .gitignore
+
+Starting: ios
+Error: Cannot find module '/Users/rhiannon/code/mnemonic/ios'
+    at Module.executeUserEntryPoint [as runMain] (node:internal/main/run_main_module:33:47)
+Node.js v26.0.0
+```
+
+**What happened:** Using the `/run` skill (or `/verify`) to test the app causes a hard crash. The skill scans the project, detects the `ios/` directory, and incorrectly tries to run it as a Node module (`node ios`) instead of using Expo's build command.
+
+**Likely cause:** The `/run` skill has no project-specific run command to reference, so it falls back to a built-in heuristic that mistakes the native `ios/` directory for a Node entrypoint. Fix: add a `.claude/commands/run.md` project skill that tells the system the correct command (`npm run ios`).
+
 ## BUG-005 — ExpoSpeechRecognition native module not found; voice screen crashes on launch
 
 **Status:** PRODUCT REVIEW
