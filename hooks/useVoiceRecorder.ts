@@ -4,11 +4,28 @@ import {
   setAudioModeAsync,
   useAudioRecorder,
 } from 'expo-audio';
-import {
-  ExpoSpeechRecognitionModule,
-  useSpeechRecognitionEvent,
-} from 'expo-speech-recognition';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+// Guard against the native module not being linked (requires a clean `expo run:ios`).
+// When unavailable, audio still records but live transcription is disabled.
+type SpeechMod = typeof import('expo-speech-recognition');
+let _speechMod: SpeechMod | null = null;
+try {
+  _speechMod = require('expo-speech-recognition') as SpeechMod;
+} catch {
+  console.warn(
+    '[useVoiceRecorder] expo-speech-recognition native module not available. ' +
+    'Run `expo run:ios` to rebuild. Live transcription disabled.'
+  );
+}
+
+const SpeechModule = _speechMod?.ExpoSpeechRecognitionModule ?? null;
+
+// Stable hook reference chosen at module-load time so React's hook count
+// stays consistent across all renders of any component using this module.
+const useSpeechEvent: SpeechMod['useSpeechRecognitionEvent'] =
+  _speechMod?.useSpeechRecognitionEvent ??
+  ((_type: string, _listener: (e: any) => void) => {});
 
 export type RecorderState = 'idle' | 'recording' | 'stopping' | 'done' | 'error';
 
@@ -36,12 +53,12 @@ export function useVoiceRecorder(): VoiceRecorderResult {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  useSpeechRecognitionEvent('result', (event) => {
+  useSpeechEvent('result', (event) => {
     const latest = event.results[event.results.length - 1]?.transcript ?? '';
     if (latest) setTranscript(latest);
   });
 
-  useSpeechRecognitionEvent('error', (event) => {
+  useSpeechEvent('error', (event) => {
     // Speech recognition errors are non-fatal — audio still records
     console.warn('[useVoiceRecorder] Speech recognition error:', event.message);
   });
@@ -62,11 +79,13 @@ export function useVoiceRecorder(): VoiceRecorderResult {
         return;
       }
 
-      const speechPerms = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
-      if (!speechPerms.granted) {
-        setState('error');
-        setErrorMessage('Speech recognition access is required to transcribe notes. Please enable it in Settings.');
-        return;
+      if (SpeechModule) {
+        const speechPerms = await SpeechModule.requestPermissionsAsync();
+        if (!speechPerms.granted) {
+          setState('error');
+          setErrorMessage('Speech recognition access is required to transcribe notes. Please enable it in Settings.');
+          return;
+        }
       }
 
       setTranscript('');
@@ -77,7 +96,7 @@ export function useVoiceRecorder(): VoiceRecorderResult {
       await recorder.prepareToRecordAsync();
       recorder.record();
 
-      ExpoSpeechRecognitionModule.start({
+      SpeechModule?.start({
         lang: 'en-US',
         interimResults: true,
         continuous: true,
@@ -102,7 +121,7 @@ export function useVoiceRecorder(): VoiceRecorderResult {
     clearTimer();
 
     try {
-      ExpoSpeechRecognitionModule.stop();
+      SpeechModule?.stop();
       await recorder.stop();
       await setAudioModeAsync({ allowsRecording: false });
       setAudioUri(recorder.uri ?? null);
@@ -116,7 +135,7 @@ export function useVoiceRecorder(): VoiceRecorderResult {
   const cancelRecording = useCallback(async () => {
     clearTimer();
     try {
-      ExpoSpeechRecognitionModule.abort();
+      SpeechModule?.abort();
       await recorder.stop();
       await setAudioModeAsync({ allowsRecording: false });
     } catch {
