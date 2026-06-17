@@ -9,8 +9,10 @@
 ## The correct command
 
 ```bash
-npx expo run:ios
+mkdir -p ~/plan/logs && npx expo run:ios 2>&1 | tee ~/plan/logs/metro.log
 ```
+
+This pipes all Metro output (bundler messages, JS errors, console logs) to `~/plan/logs/metro.log`. The `/sim-bugs` skill reads from this file to capture JS-layer errors that don't appear in the iOS system log.
 
 **Do not use `npm run ios` or `npx expo start --ios`.** Those launch Expo Go, which cannot load this app — native modules (`expo-audio`, `expo-speech-recognition`) require a compiled dev build. Using Expo Go will time out with a `xcrun simctl openurl` error.
 
@@ -41,7 +43,7 @@ Press `Ctrl+C` in the terminal to stop Metro.
 
 | Action | Command / Key |
 |--------|--------------|
-| Build and launch | `npx expo run:ios` |
+| Build and launch | `mkdir -p ~/plan/logs && npx expo run:ios 2>&1 \| tee ~/plan/logs/metro.log` |
 | Reload JS | `r` in Metro terminal |
 | Open dev menu | Shake Simulator (Device → Shake) |
 | Stop server | `Ctrl+C` |
