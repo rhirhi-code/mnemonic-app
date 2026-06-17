@@ -244,3 +244,46 @@ Then rebuild (`expo run:ios`) to regenerate the native project.
 ---
 
 _Captured by /sim-bugs — ~25,000 raw system log lines + no Metro log ingested, 3 bugs identified_
+
+---
+
+## Simulator Session — 2026-06-16 | PR #22: Fix BUG-010/011; mark BUG-008/009 RESOLVED
+
+**Simulator:** iPhone 17 Pro (FFD4724B)  
+**Log window:** last 10 minutes  
+**Metro log:** found — 43 lines ingested  
+**PR:** #22 — MERGED  
+**Files changed in PR:** ai/providers/claude.ts, app/(tabs)/notes.tsx, components/AIStatusBanner.tsx, plan/bugs.md  
+**Bugs found:** 2 (0 Critical, 0 High, 2 Medium)
+
+> **Note:** System log captured 0 lines for this window (app was idle or recently booted). All signal came from the Metro log (app runtime output piped through Metro's log stream).
+
+### Critical
+
+_None._
+
+### High
+
+_None._
+
+### Medium / Warnings
+
+#### [PRE-EXISTING?] Native warning: `hapticpatternlibrary.plist` missing in simulator
+
+- **Frequency:** ~30× (15 `[CoreHaptics]` + 15 `[UIKitCore]` pairs) during the session
+- **Source:** [METRO] — app runtime log
+- **Message:** `[CoreHaptics] +[CHHapticPattern patternForKey:error:]: Failed to read pattern library data: Error Domain=NSCocoaErrorDomain Code=260 "The file "hapticpatternlibrary.plist" couldn't be opened because there is no such file."`
+- **Likely cause:** The iOS Simulator does not ship haptic pattern library files. `UIKBFeedbackGenerator` (keyboard haptics) fires every time the on-screen keyboard appears. This is a simulator-environment limitation, not an app bug — fires on every key tap.
+- **Suggested fix:** No action needed; this is a known simulator-only artifact. The warning will not appear on a physical device.
+
+#### [PRE-EXISTING?] Native warning: TextInputUI accumulator updated after completion
+
+- **Frequency:** 4× during the session
+- **Source:** [METRO] — app runtime log
+- **Message:** `[TextInputUI] Attempted to update accumulator from source type: 0, after completion has already been called for token:[...]`
+- **Likely cause:** A UIKit-internal race condition in keyboard text prediction/autocomplete; the accumulator token receives an update after it has already been finalized. Likely triggered by fast typing or auto-correct interactions.
+- **Suggested fix:** No action needed; this is a UIKit internal warning with no user-facing impact and no relation to app code.
+
+---
+
+_Captured by /sim-bugs — 0 raw system log lines + 43 Metro log lines ingested, ~34 matched filters_
