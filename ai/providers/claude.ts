@@ -5,7 +5,7 @@ import type { AIProvider, CategorizeResult, AskResult, RecapResult } from '../ty
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-opus-4-8';
 
-type ContentBlock = { type: 'text'; text: string } | { type: 'thinking'; thinking: string } | { type: string };
+type ContentBlock = { type: 'text'; text: string } | { type: string };
 
 async function callClaude(system: string, userMessage: string): Promise<string> {
   const apiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY ?? '';
@@ -19,7 +19,6 @@ async function callClaude(system: string, userMessage: string): Promise<string> 
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 2048,
-      thinking: { type: 'adaptive' },
       system,
       messages: [{ role: 'user', content: userMessage }],
     }),
