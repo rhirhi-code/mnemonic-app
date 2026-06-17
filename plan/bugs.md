@@ -109,7 +109,7 @@ Operation timed out
 
 ## BUG-008 — @anthropic-ai/sdk not found at bundle time; installed in worktree node_modules only
 
-**Status:** BACKLOG
+**Status:** RESOLVED — fixed in PR #20; switched to raw `fetch`, removed SDK entirely
 **Phase:** 7 (Real AI Integration)
 
 **Error:**
@@ -125,7 +125,7 @@ iOS Bundling failed 1075ms node_modules/expo-router/entry.js (2127 modules)
 
 ## BUG-009 — @anthropic-ai/sdk imports node:fs via credential chain; crashes in React Native
 
-**Status:** BACKLOG
+**Status:** RESOLVED — fixed in PR #20; switched to raw `fetch`, removed SDK entirely
 **Phase:** 7 (Real AI Integration)
 
 **Error:**
@@ -160,3 +160,87 @@ Uncaught Error: Cannot find native module 'ExpoSpeechRecognition'
 **What happened:** Launching the app with `expo run:ios` crashes immediately with "Cannot find native module 'ExpoSpeechRecognition'". The error originates at the `expo-speech-recognition` import in `useVoiceRecorder.ts`, which is imported at the top of `app/note/voice.tsx`. A separate warning also fires that `voice.tsx` is missing its default export (the screen is a placeholder stub).
 
 **Likely cause:** Two issues: (1) The `expo-speech-recognition` native module is not linked in the current iOS build — likely because CocoaPods were not re-installed after the package was added. Running a clean `expo run:ios` (which re-runs pod install) should fix this. (2) `app/note/voice.tsx` exports no default React component, which violates Expo Router's file-based routing requirement.
+
+---
+
+## Simulator Session — 2026-06-16 20:29 | PR #20: Fix BUG-009: switch claude provider to raw fetch, remove @anthropic-ai/sdk
+
+**Simulator:** iPhone 17 Pro (FFD4724B)
+**Log window:** last 15 minutes (app session PID 87792, launched 20:18:53)
+**Metro log:** not found
+**PR:** #20 — MERGED
+**Files changed in PR:** ai/providers/claude.ts, package.json, package-lock.json, plan/bugs.md
+**Bugs found:** 3 (1 Critical, 1 High, 1 Medium)
+
+> **Note on log source:** React Native / Expo JS errors (console.error, unhandled rejections, fetch errors) are routed through the Metro bundler and do **not** appear in the iOS system log. The system log captures native-layer errors only. Check the Metro terminal for JS-level stack traces when debugging API or JS errors.
+
+---
+
+## BUG-010 — `thinking: { type: 'adaptive' }` is an invalid API parameter; categorization silently returns nothing
+
+**Status:** PRODUCT REVIEW — fixed in this PR; removed invalid `thinking` field from `callClaude`
+**Phase:** 5 (AI Integration)
+**PR-related:** YES — introduced in PR #20 (`ai/providers/claude.ts`)
+**Severity:** Critical
+
+**What happened:** User added a note; received no real categorization. No outbound connection to `api.anthropic.com` was observed in the iOS simulator network logs during the session, indicating either the request failed before sending or was silently discarded.
+
+**Error (expected in Metro terminal):**
+```
+ERROR  Anthropic API 400: {"type":"error","error":{"type":"invalid_request_error","message":"thinking.type must be one of enabled, disabled"}}
+```
+
+**Root cause:** `ai/providers/claude.ts` sent:
+```ts
+thinking: { type: 'adaptive' },
+```
+The Anthropic API only accepts `"enabled"` (with a required `budget_tokens` field) or `"disabled"` for the `thinking` parameter. `"adaptive"` is not a valid value and causes a 400 response.
+
+**Fix:** Removed the `thinking` field entirely from the request body.
+
+---
+
+## BUG-011 — Categorization failure is silent; user gets no error feedback
+
+**Status:** PRODUCT REVIEW — fixed in this PR; `AIStatusBanner` now shows error count for `aiStatus === 'error'` notes
+**Phase:** 5 (AI Integration)
+**PR-related:** PRE-EXISTING (call site predates PR #20)
+**Severity:** High
+
+**What happened:** When the Anthropic API call throws (e.g., due to BUG-010), the note is saved with `aiStatus: 'error'` but the user sees no message — the note sits in the "Pending" group indefinitely with no indication that categorization failed.
+
+**Fix:** `AIStatusBanner` now accepts an `errorCount` prop and renders a red error message ("N notes failed to categorize") alongside the pending spinner when error notes exist. `notes.tsx` counts notes with `aiStatus === 'error'` and passes the count to the banner.
+
+---
+
+## BUG-012 — Info.plist missing `fetch` and `remote-notification` background modes
+
+**Status:** OPEN
+**Phase:** 0 (Bootstrap / Config)
+**PR-related:** PRE-EXISTING
+**Severity:** Medium
+
+**System log warnings (20:18:54, PID 87792):**
+```
+mnemonic: (UIKitCore) You've implemented -[<UIApplicationDelegate> application:performFetchWithCompletionHandler:],
+but you still need to add "fetch" to the list of your supported UIBackgroundModes in your Info.plist.
+
+mnemonic: (UIKitCore) You've implemented -[<UIApplicationDelegate> application:didReceiveRemoteNotification:fetchCompletionHandler:],
+but you still need to add "remote-notification" to the list of your supported UIBackgroundModes in your Info.plist.
+```
+
+**Likely cause:** The Expo-generated `Info.plist` does not declare the background modes that the app's delegate implements. This will become a hard assert in a future iOS version.
+
+**Suggested fix:** In `app.json`, add:
+```json
+"ios": {
+  "infoPlist": {
+    "UIBackgroundModes": ["fetch", "remote-notification"]
+  }
+}
+```
+Then rebuild (`expo run:ios`) to regenerate the native project.
+
+---
+
+_Captured by /sim-bugs — ~25,000 raw system log lines + no Metro log ingested, 3 bugs identified_

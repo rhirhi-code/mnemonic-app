@@ -2,17 +2,27 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 interface Props {
   pendingCount: number;
+  errorCount: number;
 }
 
-export function AIStatusBanner({ pendingCount }: Props) {
-  if (pendingCount === 0) return null;
+export function AIStatusBanner({ pendingCount, errorCount }: Props) {
+  if (pendingCount === 0 && errorCount === 0) return null;
 
   return (
     <View style={styles.banner}>
-      <ActivityIndicator size="small" color="#888" style={styles.spinner} />
-      <Text style={styles.text}>
-        Categorizing {pendingCount} {pendingCount === 1 ? 'note' : 'notes'}…
-      </Text>
+      {pendingCount > 0 && (
+        <>
+          <ActivityIndicator size="small" color="#888" style={styles.spinner} />
+          <Text style={styles.text}>
+            Categorizing {pendingCount} {pendingCount === 1 ? 'note' : 'notes'}…
+          </Text>
+        </>
+      )}
+      {errorCount > 0 && (
+        <Text style={[styles.text, styles.errorText, pendingCount > 0 && styles.errorSpacer]}>
+          {errorCount} {errorCount === 1 ? 'note' : 'notes'} failed to categorize
+        </Text>
+      )}
     </View>
   );
 }
@@ -33,5 +43,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 13,
     color: '#666',
+  },
+  errorText: {
+    color: '#C0392B',
+  },
+  errorSpacer: {
+    marginLeft: 12,
   },
 });

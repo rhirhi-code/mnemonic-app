@@ -23,6 +23,11 @@ export default function NotesScreen() {
     [notes]
   );
 
+  const errorCount = useMemo(
+    () => notes.filter((n) => n.aiStatus === 'error').length,
+    [notes]
+  );
+
   useEffect(() => {
     if (pendingCount === 0) return;
     const id = setInterval(refresh, 3000);
@@ -83,7 +88,7 @@ export default function NotesScreen() {
       <View style={styles.titleRow}>
         <Text style={styles.screenTitle}>Notes</Text>
       </View>
-      <AIStatusBanner pendingCount={pendingCount} />
+      <AIStatusBanner pendingCount={pendingCount} errorCount={errorCount} />
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         {grouped.groups.map(({ categoryId, notes: groupNotes }) => {
           const category = categoryId != null ? grouped.catMap.get(categoryId) : null;
