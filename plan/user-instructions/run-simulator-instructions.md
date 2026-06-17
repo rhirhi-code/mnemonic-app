@@ -3,52 +3,37 @@
 ## Prerequisites
 
 - Xcode installed (includes Simulator)
-- Expo Go installed in the Simulator (happens automatically on first run)
 - Node.js installed
+- Dependencies installed: `npm install`
 
-## The problem
-
-Running `npm run ios` uses your machine's LAN IP to connect the Simulator to the Metro bundler. This times out if the Simulator can't reach that IP (firewall, VPN, IP change, etc.). **Always use `--tunnel` instead.**
-
-## Steps
-
-### 1. Start the dev server with tunnel mode
+## The correct command
 
 ```bash
-npm run ios -- --tunnel
+npx expo run:ios
 ```
 
-This starts Metro, opens the iOS Simulator, and creates a public tunnel URL (via ngrok) so the Simulator can always reach the bundler regardless of network configuration.
+**Do not use `npm run ios` or `npx expo start --ios`.** Those launch Expo Go, which cannot load this app — native modules (`expo-audio`, `expo-speech-recognition`) require a compiled dev build. Using Expo Go will time out with a `xcrun simctl openurl` error.
 
-> **First time only:** Expo will ask you to install `@expo/ngrok`. Press `y` to accept.
+## First run vs. subsequent runs
 
-### 2. Wait for the app to load
+**First run** (or after adding a new native package): `npx expo run:ios` compiles the app and installs it on the Simulator. This takes 2–5 minutes.
 
-The Simulator will open automatically. Expo Go launches and connects via the tunnel URL. The first bundle takes 30–60 seconds.
+**Subsequent runs**: the installed dev build is already on the Simulator. You can either:
+- Re-run `npx expo run:ios` (recompiles only if native code changed), or
+- Open the already-installed app on the Simulator directly — Metro still hot-reloads JS changes automatically.
 
-### 3. Making changes
+## Making changes
 
-Metro watches for file changes and hot-reloads automatically. No need to restart unless you:
-- Add a new native dependency
-- Change `app.json`
+Metro watches for file changes and hot-reloads automatically. No restart needed unless you:
+- Add or remove a native dependency (requires re-running `npx expo run:ios`)
+- Change `app.json` plugins or native config
 - Hit a red error screen that won't clear
 
-To force a full reload: press `r` in the Metro terminal, or shake the Simulator (Device → Shake) and tap "Reload".
+To force a full JS reload: press `r` in the Metro terminal, or shake the Simulator (Device → Shake) and tap "Reload".
 
-### 4. Stopping
+## Stopping
 
-Press `Ctrl+C` in the terminal to stop Metro and close the tunnel.
-
----
-
-## If the tunnel doesn't work
-
-Try these in order:
-
-1. **Retry tunnel** — press `Ctrl+C`, then re-run `npm run ios -- --tunnel`
-2. **Manual localhost** — in a separate terminal run `npm start`, then in the Simulator open Expo Go manually and enter `exp://127.0.0.1:8081`
-3. **Check firewall** — System Settings → Network → Firewall → make sure it's not blocking Node/Metro on port 8081
-4. **Re-install Expo Go in the Simulator** — in the Metro terminal press `shift+i` to pick a simulator, or delete and reinstall Expo Go
+Press `Ctrl+C` in the terminal to stop Metro.
 
 ---
 
@@ -56,7 +41,7 @@ Try these in order:
 
 | Action | Command / Key |
 |--------|--------------|
-| Start with tunnel | `npm run ios -- --tunnel` |
-| Reload app | `r` in Metro terminal |
+| Build and launch | `npx expo run:ios` |
+| Reload JS | `r` in Metro terminal |
 | Open dev menu | Shake Simulator (Device → Shake) |
 | Stop server | `Ctrl+C` |

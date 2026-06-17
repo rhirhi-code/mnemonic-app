@@ -88,6 +88,25 @@ Node.js v26.0.0
 
 **Likely cause:** The `/run` skill has no project-specific run command to reference, so it falls back to a built-in heuristic that mistakes the native `ios/` directory for a Node entrypoint. Fix: add a `.claude/commands/run.md` project skill that tells the system the correct command (`npm run ios`).
 
+## BUG-007 — Simulator times out opening exp:// URL; app launched via Expo Go instead of dev build
+
+**Status:** RESOLVED — use `npx expo run:ios`, not `npm run ios`; see `plan/user-instructions/run-simulator-instructions.md`
+**Phase:** 6 (Recap Tab)
+
+**Error:**
+```
+Error: xcrun simctl openurl FFD4724B-E693-47FF-837B-353CA35DDC3B exp://192.168.0.162:8081 exited with non-zero code: 60
+An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=60):
+Simulator device failed to open exp://192.168.0.162:8081.
+Operation timed out
+```
+
+**What happened:** Opening the app in the simulator fails with a timeout on the `exp://` Expo Go URL. The stack trace shows `openProjectInExpoGoAsync`, meaning the launch command tried to open the app in Expo Go rather than the compiled dev build.
+
+**Likely cause:** The app was started with `npm run ios` or `npx expo start --ios`, both of which route through Expo Go. Since Phase 4 added native modules (`expo-audio`, `expo-speech-recognition`), the app can no longer run in Expo Go and must be launched with `npx expo run:ios`, which compiles and installs the dev build directly.
+
+**Fix:** Use `npx expo run:ios` (or the `/run` skill) instead of `npm run ios`.
+
 ## BUG-005 — ExpoSpeechRecognition native module not found; voice screen crashes on launch
 
 **Status:** RESOLVED — fixed in PR #13
