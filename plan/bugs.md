@@ -107,6 +107,41 @@ Operation timed out
 
 **Fix:** Use `npx expo run:ios` (or the `/run` skill) instead of `npm run ios`.
 
+## BUG-008 — @anthropic-ai/sdk not found at bundle time; installed in worktree node_modules only
+
+**Status:** BACKLOG
+**Phase:** 7 (Real AI Integration)
+
+**Error:**
+```
+Unable to resolve "@anthropic-ai/sdk" from "ai/providers/claude.ts"
+> 1 | import Anthropic from '@anthropic-ai/sdk';
+iOS Bundling failed 1075ms node_modules/expo-router/entry.js (2127 modules)
+```
+
+**What happened:** After implementing `ai/providers/claude.ts` with the `@anthropic-ai/sdk` import, Metro fails to bundle with "Unable to resolve" at runtime. The SDK was installed via `npm install` inside the git worktree, so it landed in the worktree's own `node_modules`. Metro resolves modules from the main project root, which doesn't have the SDK.
+
+**Likely cause:** `npm install @anthropic-ai/sdk` was run inside the git worktree directory, not the main project root. The main project's `node_modules` (and `package.json`) don't include the new dependency until the PR is merged and `npm install` is re-run from the project root.
+
+## BUG-009 — @anthropic-ai/sdk imports node:fs via credential chain; crashes in React Native
+
+**Status:** BACKLOG
+**Phase:** 7 (Real AI Integration)
+
+**Error:**
+```
+The package at "node_modules/@anthropic-ai/sdk/lib/credentials/credential-chain.mjs"
+attempted to import the Node standard library module "node:fs".
+It failed because the native React runtime does not include the Node standard library.
+
+Unable to resolve module node:fs from
+/Users/rhiannon/code/mnemonic/node_modules/@anthropic-ai/sdk/lib/credentials/credential-chain.mjs
+```
+
+**What happened:** After resolving BUG-008 and installing the SDK in the main project, the app crashes at bundle time because `@anthropic-ai/sdk` unconditionally imports `node:fs` through its credential chain (`client.mjs` → `credential-chain.mjs`). React Native has no Node standard library, so the import fails hard.
+
+**Likely cause:** The `@anthropic-ai/sdk` does not ship a React Native–compatible build. Its main entry (`index.mjs`) pulls in a credential discovery chain designed for server/Node environments. There is no `browser` or `react-native` export condition to exclude this path. Fix: remove the SDK and call the Anthropic REST API directly via `fetch`, which is available in React Native.
+
 ## BUG-005 — ExpoSpeechRecognition native module not found; voice screen crashes on launch
 
 **Status:** RESOLVED — fixed in PR #13
