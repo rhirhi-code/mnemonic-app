@@ -2,7 +2,7 @@
 
 ## BUG-013 — Notes stay in Pending; AI categorization silently fails or hangs
 
-**Status:** PRODUCT REVIEW — fixed in this PR: added 30s fetch timeout + error logging
+**Status:** RESOLVED — confirmed working in simulator (PR #26)
 **Phase:** 7 (Real AI Integration)
 
 **What happened:** After saving a text note, the note stayed in the "Pending" group indefinitely with no error banner. The categorization appeared to neither complete nor fail.
@@ -236,7 +236,7 @@ The Anthropic API only accepts `"enabled"` (with a required `budget_tokens` fiel
 
 ## BUG-012 — Info.plist missing `fetch` and `remote-notification` background modes
 
-**Status:** PRODUCT REVIEW — fixed in this PR; added `UIBackgroundModes` to `app.json`
+**Status:** RESOLVED — fixed in PR #25; app ran without UIKit warnings after rebuild
 **Phase:** 0 (Bootstrap / Config)
 **PR-related:** PRE-EXISTING
 **Severity:** Medium
