@@ -1,5 +1,26 @@
 # Bugs
 
+## BUG-013 — Notes stay in Pending; AI categorization silently fails or hangs
+
+**Status:** PRODUCT REVIEW — fixed in this PR: added 30s fetch timeout + error logging
+**Phase:** 7 (Real AI Integration)
+
+**What happened:** After saving a text note, the note stayed in the "Pending" group indefinitely with no error banner. The categorization appeared to neither complete nor fail.
+
+**Observed console output (iOS simulator system log):**
+Only keyboard haptic warnings (`CHHapticPattern`, `UIKitCore`) — simulator-only artifacts, unrelated to categorization.
+No Anthropic API errors visible because the Metro terminal was not being monitored and the catch block had no logging.
+
+**Root causes (two independent issues):**
+1. `callClaude` in `ai/providers/claude.ts` had no request timeout. If the fetch hung (slow network, DNS delay, connectivity issue), the note would stay `aiStatus: 'pending'` forever with no user feedback and no error thrown.
+2. The `catch` block in `useAI.ts::categorizeNote` swallowed errors silently — it called `updateNote(..., { aiStatus: 'error' })` but never logged, so failures were invisible in Metro.
+
+**Note on haptic/TextInputUI errors:** `CHHapticPattern` and `TextInputUI` warnings are pre-existing iOS simulator artifacts (keyboard haptics on a device without haptic hardware). They appear on every key tap and have no relation to categorization. Already documented — no fix needed.
+
+**Fix:** Added 30-second `AbortController` timeout to `callClaude`, and `console.error` logging to the `categorizeNote` catch block. Added provider selection log at app startup to confirm which AI provider Metro bundled.
+
+---
+
 ## BUG-001 — iOS Simulator times out opening Expo Go URL
 
 **Status:** RESOLVED — see `plan/run-simulator-instructions.md`

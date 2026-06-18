@@ -35,7 +35,8 @@ export function useAI() {
         aiStatus: 'done',
         promptVersion: PROMPT_VERSION,
       });
-    } catch {
+    } catch (e) {
+      console.error('[useAI] categorizeNote error (note', noteId, '):', e instanceof Error ? e.message : e);
       await updateNote(db, noteId, { aiStatus: 'error' });
     }
   }, [db]);
