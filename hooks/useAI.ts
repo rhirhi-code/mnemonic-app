@@ -2,7 +2,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useState, useCallback } from 'react';
 import { getAIProvider } from '@/ai';
 import type { AskResult, RecapResult } from '@/ai/types';
-import { parseCategorizeResult, parseAskResult, parseRecapResult } from '@/ai/validation';
+import { parseAskResult, parseRecapResult } from '@/ai/validation';
 import { updateNote, listNotes } from '@/db/notes';
 import { listCategories } from '@/db/categories';
 import { buildNotesContext } from '@/utils/textHelpers';
@@ -18,8 +18,7 @@ export function useAI() {
 
   const categorizeNote = useCallback(async (noteId: number, rawText: string): Promise<void> => {
     try {
-      const raw = await aiProvider.categorizeNote(rawText, CATEGORY_NAMES);
-      const result = parseCategorizeResult(raw);
+      const result = await aiProvider.categorizeNote(rawText, CATEGORY_NAMES);
 
       const categories = await listCategories(db);
       const category =

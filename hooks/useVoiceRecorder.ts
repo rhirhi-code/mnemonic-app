@@ -103,6 +103,7 @@ export function useVoiceRecorder(): VoiceRecorderResult {
         addsPunctuation: true,
         iosTaskHint: 'dictation',
         iosVoiceProcessingEnabled: true,
+        requiresOnDeviceRecognition: true,
       });
 
       startTimeRef.current = Date.now();

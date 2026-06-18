@@ -11,7 +11,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to transcribe your voice notes.",
-        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone to record voice notes."
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone to record voice notes.",
+        "UIBackgroundModes": ["fetch", "remote-notification"]
       },
       "bundleIdentifier": "com.anonymous.mnemonic"
     },
