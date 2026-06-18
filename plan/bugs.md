@@ -54,7 +54,7 @@ Calling the 'setAudioModeAsync' function has failed
 
 ## BUG-004 — Speech recognizer fails to initialize, no transcript captured
 
-**Status:** BACKLOG
+**Status:** PRODUCT REVIEW — added `requiresOnDeviceRecognition: true` to use on-device model (iOS 16+); needs physical device test to confirm
 **Phase:** 4 (Voice Recording)
 
 **Error:**
@@ -66,7 +66,7 @@ Calling the 'setAudioModeAsync' function has failed
 
 **Likely cause:** The iOS simulator does not support `SFSpeechRecognizer` with network-based recognition. Possible fixes: (1) test on a physical device instead of the simulator, (2) pass `requiresOnDeviceRecognition: true` to `ExpoSpeechRecognitionModule.start()` which uses the on-device model available since iOS 16, or (3) both.
 
-**Plan:** Test on a physical device before attempting a code fix. On-device testing will confirm whether this is a simulator-only limitation or a real bug.
+**Fix applied:** Added `requiresOnDeviceRecognition: true` to `SpeechModule.start()` in `hooks/useVoiceRecorder.ts`. This routes recognition through the on-device model, which may work in the simulator. Needs a physical device test to fully confirm.
 
 ## BUG-006 — `/run` skill executes `node ios` instead of `expo run:ios`, crashing on launch
 
@@ -215,7 +215,7 @@ The Anthropic API only accepts `"enabled"` (with a required `budget_tokens` fiel
 
 ## BUG-012 — Info.plist missing `fetch` and `remote-notification` background modes
 
-**Status:** OPEN
+**Status:** PRODUCT REVIEW — fixed in this PR; added `UIBackgroundModes` to `app.json`
 **Phase:** 0 (Bootstrap / Config)
 **PR-related:** PRE-EXISTING
 **Severity:** Medium
