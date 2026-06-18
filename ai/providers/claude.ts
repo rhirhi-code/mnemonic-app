@@ -9,31 +9,41 @@ type ContentBlock = { type: 'text'; text: string } | { type: string };
 
 async function callClaude(system: string, userMessage: string): Promise<string> {
   const apiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY ?? '';
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 2048,
-      system,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new Error('Claude API timed out (30s)')), 30_000);
 
-  if (!response.ok) {
-    const err = await response.text().catch(() => response.statusText);
-    throw new Error(`Anthropic API ${response.status}: ${err}`);
-  }
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 2048,
+        system,
+        messages: [{ role: 'user', content: userMessage }],
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
 
-  const data: { content: ContentBlock[] } = await response.json();
-  for (const block of data.content) {
-    if (block.type === 'text') return (block as { type: 'text'; text: string }).text;
+    if (!response.ok) {
+      const err = await response.text().catch(() => response.statusText);
+      throw new Error(`Anthropic API ${response.status}: ${err}`);
+    }
+
+    const data: { content: ContentBlock[] } = await response.json();
+    for (const block of data.content) {
+      if (block.type === 'text') return (block as { type: 'text'; text: string }).text;
+    }
+    return '';
+  } catch (e) {
+    clearTimeout(timer);
+    throw e;
   }
-  return '';
 }
 
 function safeJSON(text: string): unknown {
